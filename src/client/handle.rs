@@ -92,7 +92,7 @@ impl<S: Clone + Send + Sync + 'static> GeminiLiveClient<S> {
         }
 
         let encoded_data = base64::engine::general_purpose::STANDARD.encode(&byte_data);
-        let mime_type = format!("audio/L16;rate={};channels={}", sample_rate, channels);
+        let mime_type = format!("audio/pcm;rate={}", sample_rate);
 
         let audio_blob = Blob {
             mime_type,
