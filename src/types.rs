@@ -452,6 +452,25 @@ pub struct SessionResumptionUpdate {
 }
 
 #[derive(Deserialize, Debug, Clone, Default)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum Modality {
+    #[default]
+    ModalityUnspecified,
+    Text,
+    Image,
+    Video,
+    Audio,
+    Document,
+}
+
+#[derive(Deserialize, Debug, Clone, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct ModalityTokenCount {
+    pub modality: Modality,
+    pub token_count: i32,
+}
+
+#[derive(Deserialize, Debug, Clone, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct UsageMetadata {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -466,6 +485,10 @@ pub struct UsageMetadata {
     pub thoughts_token_count: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_token_count: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prompt_tokens_details: Option<Vec<ModalityTokenCount>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub response_tokens_details: Option<Vec<ModalityTokenCount>>,
 }
 
 #[derive(Deserialize, Debug, Clone, Default)]
