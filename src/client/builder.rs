@@ -2,7 +2,6 @@ use super::handle::GeminiLiveClient;
 use super::handlers::{
     EventHandlerSimple, Handlers, ServerContentContext, ToolHandler, UsageMetadataContext,
 };
-use crate::error::GeminiError;
 use crate::types::*;
 use std::sync::Arc;
 use tokio::sync::{mpsc, oneshot};
@@ -93,7 +92,7 @@ impl<S: Clone + Send + Sync + 'static> GeminiLiveClientBuilder<S> {
         self
     }
 
-    pub async fn connect(self) -> Result<GeminiLiveClient<S>, GeminiError> {
+    pub fn connect(self) -> GeminiLiveClient<S> {
         let (shutdown_tx, shutdown_rx) = oneshot::channel();
         let (outgoing_sender, outgoing_receiver) = mpsc::channel(100);
 
@@ -108,11 +107,10 @@ impl<S: Clone + Send + Sync + 'static> GeminiLiveClientBuilder<S> {
             shutdown_rx,
             outgoing_receiver,
         );
-        tokio::time::sleep(std::time::Duration::from_millis(50)).await;
-        Ok(GeminiLiveClient {
+        GeminiLiveClient {
             shutdown_tx: Some(shutdown_tx),
             outgoing_sender: Some(outgoing_sender),
             state: state_arc,
-        })
+        }
     }
 }
